@@ -1,2 +1,2 @@
-# rasqual_pipeline
-Rasqual pipeline
+# Rasqual pipeline
+Rasqual pipeline using snakemake
