@@ -1,0 +1,32 @@
+# Snakefile
+import pandas as pd
+from pathlib import Path
+import os
+from glob import glob
+
+configfile: "config/config.yaml"
+
+VCF_FILES = glob(config['vcf_regex'])
+if not VCF_FILES:
+    raise ValueError(f"No VCF files found matching pattern: {config['vcf_regex']}")
+print(f"Found {len(VCF_FILES)} VCF files for WASP")
+
+# Load metadata to extract samples and celltypes
+metadata_df = pd.read_table(config["metadata_file"])
+
+include: 'rules/metadata.filter.smk'
+include: 'rules/peaks.to.saf.smk'
+include: 'rules/split.bam.smk'
+include: 'rules/bwa.index.smk'
+include: 'rules/wasp.index.smk'
+include: 'rules/wasp.run.smk'
+
+rule all:
+    input:
+        config['output_folder'] + '/metadata-filtered/metadata.filtered.tsv',
+        expand(config['output_folder'] + '/cell-peaks-saf/{celltype}_peaks.saf', celltype=metadata_df[config["celltype_column"]].unique()),
+        config['output_folder'] + '/split-bams/all.done',
+        config['output_folder'] + '/qc/flagstat_split_bams_qc.tsv',
+        config['output_folder'] + '/wasp-processing/bwa_index/genome_index.bwt.2bit.64',
+        config['output_folder'] + '/wasp-processing/index/haplotypes.h5'
+        #get_processed_bam_targets

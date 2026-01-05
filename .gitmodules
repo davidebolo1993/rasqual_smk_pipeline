@@ -1,0 +1,6 @@
+[submodule "WASP"]
+	path = WASP
+	url = https://github.com/bmvdgeijn/WASP
+[submodule "scar"]
+	path = scar
+	url = https://github.com/davidebolo1993/scar.git

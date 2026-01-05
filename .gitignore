@@ -1,0 +1,6 @@
+smk_test/*
+smk_test
+logs/*
+logs
+.snakemake
+.snakemake/*
