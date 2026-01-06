@@ -3,7 +3,7 @@ channels:
  - bioconda
 dependencies:
  - pysam
- - numpy
+ - numpy=2.3.5
  - scipy
  - hdf5
  - pytables

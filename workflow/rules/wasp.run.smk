@@ -70,21 +70,35 @@ rule wasp_complete_pipeline:
         STEP1DIR="{params.workdir}/01.remap"
         mkdir -p $STEP1DIR
         
-        samtools sort \
+        samtools collate \
         -@ {threads} \
-        -n \
-        -T $STEP1DIR/{params.donor} \
-        -o $STEP1DIR/{params.donor}.byname.bam {input.bam}
-        samtools fixmate $STEP1DIR/{params.donor}.byname.bam - | \
+        -u \
+        -O \
+        {input.bam} $STEP1DIR/{params.donor}.collate | \
+        samtools fixmate \
+        -m \
+        -u \
+        -@ {threads} \
+        - - | \
         samtools view \
-        -b \
-        -e 'flag.paired' \
+        -u \
+        -f 1 \
+        -F 12 \
         - | \
+        samtools sort \
+        -n \
+        -u \
+        -@ {threads} \
+        -T $STEP1DIR/{params.donor}.sort - | \
         samtools fastq \
+        -@ {threads} \
         -T CB \
         -1 $STEP1DIR/{params.donor}.r1.fq.gz \
         -2 $STEP1DIR/{params.donor}.r2.fq.gz \
-        - 
+        -0 /dev/null \
+        -s /dev/null \
+        -n \
+        -
         bwa-mem2 mem \
         -C \
         -t {threads} \
