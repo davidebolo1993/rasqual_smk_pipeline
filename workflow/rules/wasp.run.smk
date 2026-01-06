@@ -100,14 +100,12 @@ rule wasp_complete_pipeline:
         -T $STEP1DIR/{params.donor} \
         --write-index \
         -o $STEP1DIR/{params.donor}.bam
-        
-        echo "QC: 1_remap_input" >> {log}
+       
         collect_qc "$STEP1DIR/{params.donor}.bam" "1_remap_input"
         
         # ========================================================================
         # STEP 2: Identify reads overlapping SNPs
         # ========================================================================
-
 
         STEP2DIR="{params.workdir}/02.intersect"
         
@@ -152,7 +150,7 @@ rule wasp_complete_pipeline:
         -T $STEP3DIR/{params.donor} \
         -@ {threads} \
         --write-index \
-        -o $STEP3DIR/{params.donor}.bam 2>> {log}
+        -o $STEP3DIR/{params.donor}.bam
 
         collect_qc "$STEP3DIR/{params.donor}.bam" "3_remapped"
         

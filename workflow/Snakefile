@@ -28,5 +28,5 @@ rule all:
         config['output_folder'] + '/split-bams/all.done',
         config['output_folder'] + '/qc/flagstat_split_bams_qc.tsv',
         config['output_folder'] + '/wasp-processing/bwa_index/genome_index.bwt.2bit.64',
-        config['output_folder'] + '/wasp-processing/index/haplotypes.h5'
-        #get_processed_bam_targets
+        config['output_folder'] + '/wasp-processing/index/haplotypes.h5',
+        get_processed_bam_targets

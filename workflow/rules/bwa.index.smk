@@ -11,7 +11,7 @@ rule bwa_mem2_index:
         multiext(config['output_folder'] + '/wasp-processing/bwa_index/genome_index', '.bwt.2bit.64', '.pac', '.ann', '.amb', '.0123')
     threads: 1
     resources:
-        mem_mb=70000,
+        mem_mb=100000,
         time="0:50:00"
     params:
         prefix=config['output_folder'] + '/wasp-processing/bwa_index/genome_index'
