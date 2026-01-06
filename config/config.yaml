@@ -1,5 +1,4 @@
 # Input files
-
 metadata_file: "/project/immune_variation/rasqual_pipe_test/metadata_updated.tsv"
 peaks_file: "/project/immune_variation/rasqual_pipe_test/peaks_updated.tsv"
 bam_column: "bamfile"
@@ -7,11 +6,12 @@ reference_genome: "/processing_data/reference_datasets/10xgenomics/2020-A-2.0.0/
 vcf_regex: "/project/immune_variation/rasqual_pipe_test/paola/vcf/vcfs_for_wasp/*gz"
 
 # Output folder
-
 output_folder: "/project/immune_variation/rasqual_pipe_test/rasqual_smk_pipeline/smk_test"
 
 # Tool paths
+scar_dir: "scar"
 wasp_dir: "WASP"
+featurecounts_dir: "workflow/scripts"
 run_wasp: True  # Set to False to skip WASP processing
 
 # Parameters for scar

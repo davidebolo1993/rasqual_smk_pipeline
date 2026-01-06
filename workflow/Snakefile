@@ -20,6 +20,7 @@ include: 'rules/split.bam.smk'
 include: 'rules/bwa.index.smk'
 include: 'rules/wasp.index.smk'
 include: 'rules/wasp.run.smk'
+include: 'rules/featurecounts.count.smk'
 
 rule all:
     input:
@@ -27,6 +28,5 @@ rule all:
         expand(config['output_folder'] + '/cell-peaks-saf/{celltype}_peaks.saf', celltype=metadata_df[config["celltype_column"]].unique()),
         config['output_folder'] + '/split-bams/all.done',
         config['output_folder'] + '/qc/flagstat_split_bams_qc.tsv',
-        config['output_folder'] + '/wasp-processing/bwa_index/genome_index.bwt.2bit.64',
-        config['output_folder'] + '/wasp-processing/index/haplotypes.h5',
-        get_processed_bam_targets
+        get_processed_bam_targets,
+        config['output_folder'] + '/counts/all_counts.done'

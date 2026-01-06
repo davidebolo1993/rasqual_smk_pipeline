@@ -18,6 +18,8 @@ rule split_single_bam:
     resources:
         mem_mb=2000,
         time="02:00:00"
+    params:
+        scar=config['scar_dir'] + '/build/scar'
     shell:
         '''
         # Create per-pool metadata
@@ -26,11 +28,11 @@ rule split_single_bam:
         grep -w "{params.pool_id}" {input} >> {params.output_metas}/{params.pool_id}.metadata.filtered.tsv || true
         
         # Run scar split
-        /project/immune_variation/rasqual_pipe_test/scar \
-            split \
-            -i {params.output_metas}/{params.pool_id}.metadata.filtered.tsv \
-            -o {params.output_bams} \
-            -c {params.celltype_col}
+        {params.scar} \
+        split \
+        -i {params.output_metas}/{params.pool_id}.metadata.filtered.tsv \
+        -o {params.output_bams} \
+        -c {params.celltype_col}
         
         touch {output}
         '''

@@ -18,10 +18,11 @@ rule filter_metadata:
     params:
         celltype_col=config['celltype_column'],
         min_cells=config.get('min_cells', 10),
-        bed_dir=config['output_folder'] + '/cell-peaks-bed'
+        bed_dir=config['output_folder'] + '/cell-peaks-bed',
+        scar=config['scar_dir'] + '/build/scar'
     shell:
         '''
-        /project/immune_variation/rasqual_pipe_test/scar \
+        {params.scar} \
         filter \
         -i {input.metadata} \
         -o {output.filtered_metadata} \
