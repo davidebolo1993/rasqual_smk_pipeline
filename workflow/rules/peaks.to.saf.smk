@@ -1,6 +1,8 @@
+# workflow/rules/peaks.to.saf.smk
+
 rule bed_to_saf:
     '''
-    Convert BED peak files to SAF format for featureCounts
+    Convert BED peak files to SAF format for featureCounts.
     '''
     input:
         rules.filter_metadata.output.bed_files
@@ -8,11 +10,11 @@ rule bed_to_saf:
         expand(config['output_folder'] + '/cell-peaks-saf/{celltype}_peaks.saf',celltype=metadata_df[config["celltype_column"]].unique())
     threads:
         1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000,
+        time_min=lambda wildcards, attempt: attempt * 2
     params:
         bed_dir=config['output_folder'] + '/cell-peaks-saf'
-    resources:
-        mem_mb=1000,
-        time="0:02:00"
     shell:
         '''
         mkdir -p {params.bed_dir}

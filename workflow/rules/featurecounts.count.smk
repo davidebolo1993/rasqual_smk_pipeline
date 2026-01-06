@@ -35,17 +35,17 @@ rule featurecounts_per_celltype:
     output:
         counts=config['output_folder'] + '/counts/{celltype}.count_matrix',
         summary=config['output_folder'] + '/counts/{celltype}.count_matrix.summary'
-    params:
-        featurecounts=config['featurecounts_dir'] + '/featureCounts'
     threads: 10
     resources:
-        mem_mb=10000,
-        time="00:20:00"
+        mem_mb=lambda wildcards, attempt: attempt * 10000,
+        time_min=lambda wildcards, attempt: attempt * 20
+    conda:
+        '../envs/subread.yaml'
     shell:
         '''
         mkdir -p $(dirname {output.counts})
                 
-        {params.featurecounts} \
+        featureCounts \
             -p \
             -T {threads} \
             -F SAF \
@@ -88,6 +88,9 @@ rule aggregate_counts:
         done=touch(config['output_folder'] + '/counts/all_counts.done'),
         summary=config['output_folder'] + '/counts/summary_report.txt'
     threads: 1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 100,
+        time_min=lambda wildcards, attempt: attempt * 1
     shell:
         '''
         echo "FeatureCounts completed for all celltypes" > {output.summary}

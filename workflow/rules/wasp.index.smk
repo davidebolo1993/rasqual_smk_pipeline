@@ -13,8 +13,10 @@ rule make_chrom_info:
     params:
         genome_fasta_index=config['reference_genome'] + '.fai'
     resources:
-        mem_mb=500,
-        time="0:05:00"
+        mem_mb=lambda wildcards, attempt: attempt * 500,
+        time_min=lambda wildcards, attempt: attempt * 5
+    conda:
+        '../envs/wasp.yaml'
     shell:
         '''
         if [ ! -f {params.genome_fasta_index} ]; then
@@ -36,8 +38,8 @@ rule wasp_index:
         snp_tab=config['output_folder'] + '/wasp-processing/index/snp_tab.h5'
     threads: 1
     resources:
-        mem_mb=50000,
-        time="01:00:00"
+        mem_mb=lambda wildcards, attempt: attempt * 50000,
+        time_min=lambda wildcards, attempt: attempt * 60
     params:
         wasp_dir=config['wasp_dir']
     shell:

@@ -1,0 +1,11 @@
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - pysam
+ - numpy
+ - scipy
+ - hdf5
+ - pytables
+ - samtools
+ - bwa-mem2

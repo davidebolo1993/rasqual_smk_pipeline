@@ -4,13 +4,12 @@ if config.get('run_wasp', True):
     # WASP is enabled - use full pipeline
     ruleorder: wasp_complete_pipeline > copy_split_bam_no_wasp
 else:
-    # WASP is disabled - use simple copy
+    # WASP is disabled - copy to output
     ruleorder: copy_split_bam_no_wasp > wasp_complete_pipeline
 
 rule wasp_complete_pipeline:
     '''
     Complete WASP pipeline for a single celltype/donor BAM.
-    Runs all 6 WASP steps in sequence within a single job.
     '''
     input:
         bam=config['output_folder'] + '/split-bams/{celltype}/{donor}.bam',
@@ -32,8 +31,10 @@ rule wasp_complete_pipeline:
         celltype='{celltype}'
     threads: 5
     resources:
-        mem_mb=50000,
-        time="03:00:00"
+        mem_mb=lambda wildcards, attempt: attempt * 100000,
+        time_min=lambda wildcards, attempt: attempt * 150
+    conda:
+        '../envs/wasp.yaml'
     shell:
         '''        
         mkdir -p {params.workdir}
@@ -222,8 +223,8 @@ rule copy_split_bam_no_wasp:
         bai=config['output_folder'] + '/processed-bams/{celltype}/{donor}.bam.bai'
     threads: 1
     resources:
-        mem_mb=2000,
-        time="00:30:00"
+        mem_mb=lambda wildcards, attempt: attempt * 2000,
+        time_min=lambda wildcards, attempt: attempt * 20
     params:
         bai=config['output_folder'] + '/split-bams/{celltype}/{donor}.bai'
     shell:

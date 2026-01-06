@@ -8,12 +8,12 @@ vcf_regex: "/project/immune_variation/rasqual_pipe_test/paola/vcf/vcfs_for_wasp/
 # Output folder
 output_folder: "/project/immune_variation/rasqual_pipe_test/rasqual_smk_pipeline/smk_test"
 
-# Tool paths
+# Non-conda tool paths
 scar_dir: "scar"
 wasp_dir: "WASP"
-featurecounts_dir: "workflow/scripts"
 run_wasp: True  # Set to False to skip WASP processing
 
 # Parameters for scar
 min_cells: 10
 celltype_column: "celltypes_LEV1"
+remove_duplicates: False # Set to True to remove duplicates with scar

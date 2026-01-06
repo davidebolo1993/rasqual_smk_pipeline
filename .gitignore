@@ -4,3 +4,5 @@ logs/*
 logs
 .snakemake
 .snakemake/*
+smk_test_no_conda/*
+smk_test_no_conda

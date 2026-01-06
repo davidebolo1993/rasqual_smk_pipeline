@@ -3,7 +3,7 @@
 rule split_single_bam:
     '''
     Split a single BAM file (pool) by celltype and donor.
-    Runs once per unique BAM file.
+    If rmdup: True in config.yaml, remove flagged duplicates. 
     '''
     input:
         rules.filter_metadata.output.filtered_metadata
@@ -14,26 +14,33 @@ rule split_single_bam:
         output_bams=config['output_folder'] + '/split-bams',
         pool_id='{pool_id}',
         output_metas=config['output_folder'] + '/split-metadatas',
+        scar=config['scar_dir'] + '/build/scar',
+        rmdup=config['remove_duplicates']
     threads: 1
     resources:
-        mem_mb=2000,
-        time="02:00:00"
-    params:
-        scar=config['scar_dir'] + '/build/scar'
+        mem_mb=lambda wildcards, attempt: attempt * 2000,
+        time_min=lambda wildcards, attempt: attempt * 120
     shell:
         '''
-        # Create per-pool metadata
         mkdir -p {params.output_metas}
         head -1 {input} > {params.output_metas}/{params.pool_id}.metadata.filtered.tsv
         grep -w "{params.pool_id}" {input} >> {params.output_metas}/{params.pool_id}.metadata.filtered.tsv || true
         
-        # Run scar split
-        {params.scar} \
-        split \
-        -i {params.output_metas}/{params.pool_id}.metadata.filtered.tsv \
-        -o {params.output_bams} \
-        -c {params.celltype_col}
-        
+        if [[ "{params.rmdup}" == "True" ]]; then
+            {params.scar} \
+            split \
+            -i {params.output_metas}/{params.pool_id}.metadata.filtered.tsv \
+            -o {params.output_bams} \
+            -c {params.celltype_col} \
+            -d
+        else
+           {params.scar} \
+            split \
+            -i {params.output_metas}/{params.pool_id}.metadata.filtered.tsv \
+            -o {params.output_bams} \
+            -c {params.celltype_col}
+        fi
+
         touch {output}
         '''
 
@@ -62,12 +69,14 @@ checkpoint aggregate_split_bams:
     output:
         done=touch(config['output_folder'] + '/split-bams/all.done')
     threads: 1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 100,
+        time_min=lambda wildcards, attempt: attempt * 1
     shell:
         '''
         echo "All BAM splits completed"
         echo "Split BAMs location: {config[output_folder]}/split-bams/"
         '''
-
 
 rule flagstat_split_bam:
     '''
@@ -80,8 +89,10 @@ rule flagstat_split_bam:
         qc_tsv=config['output_folder'] + '/qc/flagstat-split-bams/{celltype}/{donor}.qc.tsv'
     threads: 1
     resources:
-        mem_mb=1000,
-        time="00:05:00"
+        mem_mb=lambda wildcards, attempt: attempt * 1000,
+        time_min=lambda wildcards, attempt: attempt * 5
+    conda:
+        '../envs/wasp.yaml'
     shell:
         '''
         mkdir -p $(dirname {output.flagstat})
@@ -136,6 +147,9 @@ rule aggregate_flagstats:
     output:
         config['output_folder'] + '/qc/flagstat_split_bams_qc.tsv'
     threads: 1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 100,
+        time_min=lambda wildcards, attempt: attempt * 1
     shell:
         '''
         # Combine all QC files

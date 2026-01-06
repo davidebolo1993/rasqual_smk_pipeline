@@ -1,8 +1,9 @@
+# workflow/rules/metadata.filter.smk
+
 rule filter_metadata:
     '''
-    Filter metadata to retain cell types with sufficient representation
+    Filter metadata to retain cell types with sufficient representation.
     Generate per-cell-type peak BED files.
-    #Need to add singularity container in the end
     '''
     input:
         metadata=config['metadata_file'],
@@ -13,11 +14,11 @@ rule filter_metadata:
     threads:
         1
     resources:
-        mem_mb=1000,
-        time="0:01:00"
+        mem_mb=lambda wildcards, attempt: attempt * 1000,
+        time_min=lambda wildcards, attempt: attempt * 1
     params:
         celltype_col=config['celltype_column'],
-        min_cells=config.get('min_cells', 10),
+        min_cells=config['min_cells'],
         bed_dir=config['output_folder'] + '/cell-peaks-bed',
         scar=config['scar_dir'] + '/build/scar'
     shell:
