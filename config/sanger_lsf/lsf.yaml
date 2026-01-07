@@ -1,0 +1,30 @@
+__default__:
+
+  queue: 'small'
+  output: "logs/lsf/{rule}/{rule}-{wildcards}.out"
+  error: "logs/lsf/{rule}/{rule}-{wildcards}.err"
+  group: 'cardinal_analysis'
+
+bwa_mem2_index:
+
+  queue: 'normal'
+
+featurecounts_per_celltype:
+
+  queue: 'normal'
+
+filter_metadata:
+
+  queue: 'normal'
+
+split_single_bam:
+
+  queue: 'normal'
+
+wasp_index:
+
+  queue: 'normal'
+
+wasp_complete_pipeline:
+
+  queue: 'normal'

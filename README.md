@@ -8,8 +8,9 @@ Rasqual pipeline using snakemake
 git clone --recursive https://github.com/davidebolo1993/rasqual_smk_pipeline
 cd rasqual_smk_pipeline
 
-#create environment (conda/mamba/micromamba)
-mamba create -n rasqual_smk_pipeline_env \
+#create environment (conda/mamba)
+
+conda create -n rasqual_smk_pipeline_env \
 	-c bioconda \
 	-c conda forge \
 	snakemake=7.32.4 \
@@ -17,7 +18,7 @@ mamba create -n rasqual_smk_pipeline_env \
 	cookiecutter=2.6.0 \
 	hdf5
 	
-mamba activate $PWD/rasqual_smk_pipeline_env
+conda activate $PWD/rasqual_smk_pipeline_env
 
 #build scar
 mkdir -p scar/build && cd scar/build
@@ -35,34 +36,37 @@ cd -
 
 ### SLURM
 
-```bash
-template="gh:Snakemake-Profiles/slurm"
-cookiecutter \
-    --output-dir config \
-    $template
-```
+An example slurm profile is included in `config/ht_slurm`
 
 ### LSF
 
-```bash
-#Add here
-```
+An example lsf profile is included in `config/sanger_lsf`
 
-## Run 
+## Run
+
+### Adjust `config/config.yaml`
+
+Adjust `config/config.yaml` to match your needs.
 
 ### SLURM
 
 ```bash
 
 snakemake \
-	--profile config/slurm \
-	--rerun-triggers mtime \
-	--use-conda
+	--profile config/ht_slurm \
+	--rerun-triggers mtime
 ```
 
 ### LSF
 
 ```bash
-#Add here
+snakemake \
+    --cluster-config config/sanger_lsf/lsf.yaml \
+    --cluster "bsub -q {cluster.queue} -G {cluster.group} -M {resources.mem_mb} -W {resources.time_min} -R \"select[mem>{resources.mem_mb}] rusage[mem={resources.mem_mb}] span[hosts=1]\" -eo {cluster.error} -oo {cluster.output} -n {threads}" \
+    --default-resources mem_mb=1000 time_min=10 \
+    -j 500 \
+    --restart-times 5 \
+    --rerun-triggers 'mtime' \
+    --use-conda
 ```
 
