@@ -18,7 +18,7 @@ rule split_single_bam:
         rmdup=config['remove_duplicates']
     threads: 1
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000,
+        mem_mb=lambda wildcards, attempt: attempt * 10000,
         time_min=lambda wildcards, attempt: attempt * 120
     shell:
         '''

@@ -1,12 +1,12 @@
 # Input files
-metadata_file: "/project/immune_variation/rasqual_pipe_test/metadata_updated.tsv"
-peaks_file: "/project/immune_variation/rasqual_pipe_test/peaks_updated.tsv"
+metadata_file: "/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/pb22/final_outputs/metadata_rasqualpipe.tsv"
+peaks_file: "/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/pb22/final_outputs/peak_table.tsv"
 bam_column: "bamfile"
-reference_genome: "/processing_data/reference_datasets/10xgenomics/2020-A-2.0.0/refdata-cellranger-arc-GRCh38-2020-A-2.0.0/fasta/genome.fa"
-vcf_regex: "/project/immune_variation/rasqual_pipe_test/paola/vcf/vcfs_for_wasp/*gz"
+reference_genome: "/nfs/srpipe_references/downloaded_from_10X/refdata-cellranger-arc-GRCh38-2020-A-2.0.0/fasta/genome.fa"
+vcf_regex: "/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/pb22/rasqual_qtl/vcf/vcfs_filt_renamed/*gz"
 
 # Output folder
-output_folder: "/project/immune_variation/rasqual_pipe_test/rasqual_smk_pipeline/smk_test"
+output_folder: "output_wasp"
 
 # Non-conda tool paths
 scar_dir: "scar"
@@ -15,5 +15,5 @@ run_wasp: True  # Set to False to skip WASP processing
 
 # Parameters for scar
 min_cells: 10
-celltype_column: "celltypes_LEV1"
+celltype_column: "celltypes_LEV2"
 remove_duplicates: False # Set to True to remove duplicates with scar

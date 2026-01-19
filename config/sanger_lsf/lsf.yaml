@@ -1,8 +1,6 @@
 __default__:
 
   queue: 'small'
-  output: "logs/lsf/{rule}/{rule}-{wildcards}.out"
-  error: "logs/lsf/{rule}/{rule}-{wildcards}.err"
   group: 'cardinal_analysis'
 
 bwa_mem2_index:

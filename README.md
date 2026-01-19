@@ -60,13 +60,16 @@ snakemake \
 ### LSF
 
 ```bash
+mkdir -p logs/lsf
 snakemake \
     --cluster-config config/sanger_lsf/lsf.yaml \
-    --cluster "bsub -q {cluster.queue} -G {cluster.group} -M {resources.mem_mb} -W {resources.time_min} -R \"select[mem>{resources.mem_mb}] rusage[mem={resources.mem_mb}] span[hosts=1]\" -eo {cluster.error} -oo {cluster.output} -n {threads}" \
+    --cluster "bsub -q {cluster.queue} -G {cluster.group} -M {resources.mem_mb} -W {resources.time_min} -R \"select[mem>{resources.mem_mb}] rusage[mem={resources.mem_mb}] span[hosts=1]\" -eo logs/lsf/{rule}.{wildcards}.err -oo logs/lsf/{rule}.{wildcards}.out -n {threads}" \
     --default-resources mem_mb=1000 time_min=10 \
-    -j 500 \
+    -j 1 \
     --restart-times 5 \
     --rerun-triggers 'mtime' \
-    --use-conda
+    --use-conda \
+    --printshellcmds \
+    --rerun-incomplete
 ```
 
